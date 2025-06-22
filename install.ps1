@@ -1,69 +1,104 @@
 <#
 .SYNOPSIS
-Convinci Installer for Windows
+Installer for Convinci on Windows
 
 .DESCRIPTION
-Downloads and installs Convinci - Conventional Commits Assistant
+Downloads and installs Convinci - Conventional Commits Helper
 #>
 
-# Configurations
 $REPO_OWNER = "alexandrefelipea"
 $REPO_NAME = "convinci"
-$VERSION = "v0.1.0" # Update with each new version
 $TARGET = "x86_64-pc-windows-gnu"
-$DOWNLOAD_URL = "https://github.com/$REPO_OWNER/$REPO_NAME/releases/download/$VERSION/convinci-${VERSION}-${TARGET}.zip"
-$INSTALL_DIR = "$env:USERPROFILE\bin" # Can be another directory in PATH
 $BINARY_NAME = "convinci.exe"
+$INSTALL_DIR = "$env:USERPROFILE\bin"  # Directory in user's PATH
 $TEMP_PATH = [System.IO.Path]::GetTempFileName()
 
-# Check and create installation directory
-if (-not (Test-Path -Path $INSTALL_DIR)) {
-    New-Item -ItemType Directory -Path $INSTALL_DIR | Out-Null
+# Error handling
+function Exit-WithError {
+    param([string]$Message)
+    Write-Host "❌ $Message" -ForegroundColor Red
+    exit 1
 }
 
-# Download the binary
-Write-Host "📦 Downloading Convinci $VERSION..." -ForegroundColor Cyan
+function Show-Warning {
+    param([string]$Message)
+    Write-Host "⚠️ $Message" -ForegroundColor Yellow
+}
+
+function Get-LatestVersion {
+    $API_URL = "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/releases/latest"
+    try {
+        $response = Invoke-RestMethod -Uri $API_URL -ErrorAction Stop
+        return $response.tag_name
+    }
+    catch {
+        Exit-WithError "Failed to retrieve latest version: $_"
+    }
+}
+
 try {
-    (New-Object System.Net.WebClient).DownloadFile($DOWNLOAD_URL, $TEMP_PATH)
+    Write-Host "`n🎯 convinci Windows Installer" -ForegroundColor Cyan
+    Write-Host "============================"
+
+    # Get latest version
+    $version = Get-LatestVersion
+    Write-Host "Latest version: $version" -ForegroundColor Magenta
+
+    # Create install directory if needed
+    if (-not (Test-Path -Path $INSTALL_DIR)) {
+        New-Item -ItemType Directory -Path $INSTALL_DIR | Out-Null
+        Write-Host "Created install directory: $INSTALL_DIR"
+    }
+
+    # Build download URL (CORRECTED)
+    $DOWNLOAD_URL = "https://github.com/$REPO_OWNER/$REPO_NAME/releases/download/$version/convinci-${TARGET}.zip"
+
+    # Download
+    Write-Host "📦 Downloading convinci $version..." -ForegroundColor Cyan
+    try {
+        Invoke-WebRequest -Uri $DOWNLOAD_URL -OutFile $TEMP_PATH -ErrorAction Stop
+    }
+    catch {
+        Exit-WithError "Download failed: $_"
+    }
+
+    # Extract
+    Write-Host "🔍 Extracting files..." -ForegroundColor Cyan
+    $EXTRACT_PATH = Join-Path -Path $env:TEMP -ChildPath "convinci-$version"
+
+    if (Test-Path -Path $EXTRACT_PATH) {
+        Remove-Item -Path $EXTRACT_PATH -Recurse -Force
+    }
+
+    Expand-Archive -Path $TEMP_PATH -DestinationPath $EXTRACT_PATH -Force
+
+    # Find binary
+    $BINARY_PATH = Join-Path -Path $EXTRACT_PATH -ChildPath $BINARY_NAME
+    if (-not (Test-Path -Path $BINARY_PATH)) {
+        Exit-WithError "Binary not found in package"
+    }
+
+    # Install
+    $INSTALL_PATH = Join-Path -Path $INSTALL_DIR -ChildPath $BINARY_NAME
+    Copy-Item -Path $BINARY_PATH -Destination $INSTALL_PATH -Force
+    Write-Host "✅ Installed to: $INSTALL_PATH" -ForegroundColor Green
+
+    # Add to PATH if needed
+    $CurrentPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if ($CurrentPath -notlike "*$INSTALL_DIR*") {
+        [Environment]::SetEnvironmentVariable("Path", "$CurrentPath;$INSTALL_DIR", "User")
+        Write-Host "➡️ Added $INSTALL_DIR to user PATH" -ForegroundColor Green
+        Write-Host "   Please restart your terminal for PATH changes to take effect" -ForegroundColor Yellow
+    }
+
+    # Cleanup
+    Remove-Item -Path $TEMP_PATH -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path $EXTRACT_PATH -Recurse -Force -ErrorAction SilentlyContinue
+
+    Write-Host "`n🎉 Installation completed successfully!" -ForegroundColor Green
+    Write-Host "Run Convinci with: convinci" -ForegroundColor Cyan
+    Write-Host "Documentation: https://github.com/$REPO_OWNER/$REPO_NAME" -ForegroundColor Cyan
 }
 catch {
-    Write-Host "❌ Download failed: $_" -ForegroundColor Red
-    exit 1
+    Exit-WithError "Installation failed: $_"
 }
-
-# Extract
-Write-Host "🔍 Extracting files..." -ForegroundColor Cyan
-$ZIP_PATH = $TEMP_PATH
-$EXTRACT_PATH = Join-Path -Path $env:TEMP -ChildPath "convinci-$VERSION"
-
-if (Test-Path -Path $EXTRACT_PATH) {
-    Remove-Item -Path $EXTRACT_PATH -Recurse -Force
-}
-
-Expand-Archive -Path $ZIP_PATH -DestinationPath $EXTRACT_PATH -Force
-
-# Install
-$BINARY_PATH = Join-Path -Path $EXTRACT_PATH -ChildPath $BINARY_NAME
-if (-not (Test-Path -Path $BINARY_PATH)) {
-    Write-Host "❌ Binary not found!" -ForegroundColor Red
-    exit 1
-}
-
-Copy-Item -Path $BINARY_PATH -Destination "$INSTALL_DIR\$BINARY_NAME" -Force
-
-# Add to PATH if necessary
-$CurrentPath = [Environment]::GetEnvironmentVariable("Path", "User")
-if ($CurrentPath -notlike "*$INSTALL_DIR*") {
-    [Environment]::SetEnvironmentVariable("Path", "$CurrentPath;$INSTALL_DIR", "User")
-    Write-Host "✅ Added $INSTALL_DIR to user PATH" -ForegroundColor Green
-    Write-Host "⚠️ Please restart your terminal to apply PATH changes" -ForegroundColor Yellow
-}
-
-# Cleanup
-Remove-Item -Path $ZIP_PATH -Force
-Remove-Item -Path $EXTRACT_PATH -Recurse -Force -ErrorAction SilentlyContinue
-
-# Final message
-Write-Host "`n🎉 Installation completed successfully!" -ForegroundColor Green
-Write-Host "Run Convinci with: convinci" -ForegroundColor Cyan
-Write-Host "Documentation: https://github.com/$REPO_OWNER/$REPO_NAME`n" -ForegroundColor Cyan

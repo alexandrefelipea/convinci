@@ -69,7 +69,9 @@ get_latest_version() {
 # Download and install
 install_convinci() {
     local version="$1"
-    DOWNLOAD_URL="https://github.com/$REPO_OWNER/$REPO_NAME/releases/download/$version/convinci-${version}-${TARGET}.tar.gz"
+
+    # CORREÇÃO: Removido o ${version} do nome do arquivo
+    DOWNLOAD_URL="https://github.com/$REPO_OWNER/$REPO_NAME/releases/download/$version/convinci-${TARGET}.tar.gz"
 
     echo "📦 Downloading convinci $version for $TARGET..."
     curl -sSL -o "$TMP_DIR/convinci.tar.gz" "$DOWNLOAD_URL" || error "Failed to download binary"
