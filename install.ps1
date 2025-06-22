@@ -62,10 +62,6 @@ function Download-File {
         }
         catch {
             $lastError = $_.Exception.Message
-            # ===================================================================
-            # CORREÇÃO APLICADA AQUI
-            # A variável $attempt foi colocada entre ${} para evitar erro de parsing com os dois-pontos.
-            # ===================================================================
             Write-Host "⚠️ Download failed on attempt ${attempt}: $lastError" -ForegroundColor Yellow
 
             if ($attempt -lt $Retries) {
