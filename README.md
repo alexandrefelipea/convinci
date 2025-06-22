@@ -31,7 +31,7 @@ wget -qO- https://raw.githubusercontent.com/alexandrefelipea/convinci/master/ins
 1. Open PowerShell as an administrator
 2. Run:
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.ps1'))
+powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.ps1')"
 ```
 
 ### Alternative method for all platforms (with Rust installed):
