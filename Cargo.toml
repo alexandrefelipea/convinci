@@ -2,6 +2,12 @@
 name = "convinci"
 version = "0.1.0"
 edition = "2024"
+description = "A fast terminal helper for creating conventional commits"
+license = "MIT"
+repository = "https://github.com/alexandrefelipea/convinci"
+keywords = ["git", "commit", "conventional-commits", "cli", "tui"]
+categories = ["command-line-utilities"]
+readme = "README.md"
 
 [profile.dev]
 lto = false
