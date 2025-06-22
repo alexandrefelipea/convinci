@@ -1,0 +1,16 @@
+[package]
+name = "convinci"
+version = "0.1.0"
+edition = "2024"
+
+[profile.dev]
+lto = false
+
+[profile.release]
+lto = true
+codegen-units = 1
+
+[dependencies]
+crossterm = "0.29.0"
+ratatui = "0.29.0"  # TUI moderna com suporte a widgets
+anyhow = "1.0"      # Tratamento de erros   # Para futuras configurações
