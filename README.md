@@ -25,7 +25,7 @@ curl -sSL https://raw.githubusercontent.com/alexandrefelipea/convinci/master/ins
 Or with wget:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/seu-usuario-github/convinci/master/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.sh | bash
 ```
 ### Windows
 1. Open PowerShell as an administrator
@@ -47,7 +47,7 @@ curl -sSL https://raw.githubusercontent.com/alexandrefelipea/convinci/master/ins
 Or with wget:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/seu-usuario-github/convinci/master/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.sh | bash
 ```
 
 ### Windows
