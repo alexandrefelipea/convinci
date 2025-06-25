@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The tag that failed and needs to be recreated'
+        required: true
+        type: string
 
 jobs:
   build:
