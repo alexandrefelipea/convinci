@@ -1,167 +1,109 @@
-# Convinci - Conventional Commits Helper
+# Convinci 🚀 - Conventional Commits Helper
 
-[![GitHub release](https://img.shields.io/github/release/alexandrefelipea/convinci.svg)](https://github.com/alexandrefelipea/convinci/releases) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Crate Version](https://img.shields.io/crates/v/convinci.svg)](https://crates.io/crates/convinci)
+[![GitHub Release](https://img.shields.io/github/v/release/alexandrefelipea/convinci?include_prereleases)](https://github.com/alexandrefelipea/convinci/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/alexandrefelipea/convinci/release.yml)](https://github.com/alexandrefelipea/convinci/actions)
 
-Convinci is a fast and simple terminal application that helps you create conventional commits with an interactive TUI (Text-based User Interface). It guides you step-by-step to create commits that follow the [Conventional Commits](https://www.conventionalcommits.org) specification, making your commit history more readable and standardized.
+**Convinci** is a fast, intuitive terminal application that guides you through creating perfect [Conventional Commits](https://www.conventionalcommits.org) with an interactive TUI. Standardize your commit history and make it more readable in minutes!
 
-## Features
 
-- 🚀 **Fast and intuitive** TUI interface
+## ✨ Features
 
-- 📝 Step-by-step commit message creation
-
-- 🔄 Support for all conventional commit types (feat, fix, chore, docs, etc.)
+- 🚀 **Fast** TUI interface
+- 📝 **Step-by-step guidance** for perfect commits
+- 🔄 Support for all standard commit types (`feat`, `fix`, `chore`, `docs`, etc.)
 - ⚠️ Breaking change indicator and description
-- 📦 Pre-built binaries for Linux, macOS, and Windows
+- 🌈 Optional emoji support for visual commit messages
+- 📦 Pre-built binaries for all major platforms
+- ⌨️ Vim-style navigation (`hjkl`) and keyboard shortcuts
 
-## Installation
-
+## 📦 Installation
 ### Linux/macOS
+
+Install with curl:
 ```bash
 curl -sSL https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.sh | bash
 ```
 Or with wget:
-
 ```bash
 wget -qO- https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.sh | bash
 ```
-### Windows
-1. Open PowerShell as an administrator
-2. Run:
+### Windows (PowerShell)
+
+Run as Administrator:
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.ps1')"
 ```
-
-### Alternative method for all platforms (with Rust installed):
+### Via Cargo (Rust developers)
 ```bash
 cargo install convinci
 ```
+## 🔄 Updating
+Update to the latest version using the same installation methods for Linux/macOS and Windows.
 
-## Update
-### Linux/macOS
-```bash
-curl -sSL https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.sh | bash
-```
-Or with wget:
-
-```bash
-wget -qO- https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.sh | bash
-```
-
-### Windows
-Run the installation script again.
-
-
-### Via cargo
-```bash
+Updating Via Cargo:
+```bash 
 cargo install convinci --force
 ```
-
-## Usage
-
-Run Convinci in your Git repository:
-
+## 💻 Usage
+Navigate to your Git repository and run:
 ```bash
 convinci
 ```
-### Options
-
-- `-e, --emoji`: Enable emojis in the commit message
-
-- `-d, --demo`: Run in demo mode (does not commit, only prints the commit message)
-
-Examples:
-
+### Command Options
+| Option          | Description                          | Example                     |
+|-----------------|--------------------------------------|-----------------------------|
+| `-e`, `--emoji` | Enable emojis in commit messages     | `convinci --emoji`          |
+| `-d`, `--demo`  | Demo mode (no actual commit)         | `convinci --demo`           |
+| `-v`, `--version` | Show version information            | `convinci --version`        |
+| `-h`, `--help`   | Show help message              | `convinci --help`           |
+### Advanced Usage
 ```bash
-# Run with emojis
+# Create commit with emojis
 convinci --emoji
-
-# Run in demo mode (no commit)
+# Preview commit without executing
 convinci --demo
-
-# Run with emojis and in demo mode
-convinci -e -d
+# Combine options
+convinci -e -d  # Demo mode with emojis
 ```
-
-Follow the interactive prompts to create your commit. The interface is designed to be intuitive and fast.
-
-To see the full help message with usage instructions:
-
-```bash
-convinci --help
-```
-
 ### Keybindings
-
-- **Tab**: Move to next field
-
-- **Shift+Tab**: Move to previous field
-
-- **Ctrl+Enter**: Confirm and generate commit
-
-- **Ctrl+C**: Exit without committing
-
-- **Arrow keys / HJKL**: Navigate lists
-
-- **0-9**: Quick selection from lists
-
-## Uninstallation
+| Keys               | Action                          |
+|--------------------|---------------------------------|
+| `Tab`/`Shift+Tab` | Navigate between fields         |
+| `Ctrl+Enter`       | Confirm and generate commit     |
+| `Ctrl+C`           | Exit without committing         |
+| `↑↓`/`jk`        | Navigate lists and options      |
+| `0-9`              | Quick select from numbered list |
+## ❌ Uninstallation
 ### Linux/macOS
 ```bash
-sudo rm /usr/local/bin/convinci
+sudo rm $(which convinci)
 ```
-
 ### Windows
-1. Delete the file `convinci.exe` from the installation directory (usually `%USERPROFILE%\bin`)
-2. Remove the directory from PATH if desired
-
-
-## Contributing
-
-We welcome contributions! Here's how to set up your development environment:
-
+1. Delete `convinci.exe` from your bin directory (`%USERPROFILE%\bin`)
+2. Remove the directory from your PATH if needed
+## 🤝 Contributing
+We welcome contributions! Here's how to get started:
 ### Prerequisites
-
-- Rust (latest stable version)
-
+- Rust (latest stable)
 - Git
-
-### Setup
-
-1. Fork the repository
-
-2. Clone your fork
-
-3. Build the project:
-
+### Setup & Development
 ```bash
-
+# 1. Fork and clone the repository
+git clone https://github.com/your-username/convinci.git
+cd convinci
+# 2. Build the project
 cargo build
-
+# 3. Run in development mode
+cargo run -- --demo  # Test with demo mode
 ```
-
-4. Run in development mode:
-
-```bash
-
-cargo run
-
-```
-
 ### Contribution Guidelines
-
-- Follow the existing code style
-
-- Update documentation when needed
-
-- Use descriptive commit messages (Convinci can help with that!)
-
-- Open a pull request against the `master` branch
-
+- Follow existing code style and patterns
+- Update documentation when changing features
+- Use descriptive commit messages (Convinci can help!)
+- Open pull requests against the `master` branch
 ### Reporting Issues
-
-Please use the [GitHub issue tracker](https://github.com/alexandrefelipea/convinci/issues) to report bugs or request features.
-
-## License
-
-Convinci is open-source software licensed under the [MIT license](LICENSE).
+Found a bug? Have a feature request? Please [open an issue](https://github.com/alexandrefelipea/convinci/issues).
+## 📜 License
+Convinci is open-source software licensed under the [MIT License](LICENSE).
