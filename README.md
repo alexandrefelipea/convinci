@@ -128,21 +128,11 @@ We welcome contributions! Here's how to set up your development environment:
 
 - Git
 
-- Basic terminal tools (make, curl, etc.)
-
 ### Setup
 
 1. Fork the repository
 
-2. Clone your fork:
-
-```bash
-
-git clone https://github.com/alexandrefelipea/convinci.git
-
-cd convinci
-
-```
+2. Clone your fork
 
 3. Build the project:
 
