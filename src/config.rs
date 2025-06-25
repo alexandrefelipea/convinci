@@ -6,7 +6,7 @@ pub const COMMIT_SCOPES: [&str; 9] = [
     "<None>", "ui", "api", "database", "auth", "config", "logging", "network", "storage",
 ];
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct AppConfig {
     pub use_emoji: bool,
     pub dev_mode: bool,

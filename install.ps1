@@ -107,10 +107,6 @@ try {
         Write-Host "Created install directory: $INSTALL_DIR"
     }
 
-    # ===================================================================
-    # MELHORIA APLICADA AQUI
-    # A variável $TARGET foi colocada entre ${} para garantir que o .zip não seja interpretado como uma propriedade.
-    # ===================================================================
     $DOWNLOAD_URL = "https://github.com/$REPO_OWNER/$REPO_NAME/releases/download/$version/convinci-${TARGET}.zip"
 
     $TEMP_DIR = Join-Path -Path $env:TEMP -ChildPath "convinci-install-$version"

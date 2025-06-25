@@ -59,27 +59,39 @@ Run the installation script again.
 cargo install convinci --force
 ```
 
-## Uninstallation
-### Linux/macOS
-```bash
-sudo rm /usr/local/bin/convinci
-```
-
-### Windows
-1. Delete the file `convinci.exe` from the installation directory (usually `%USERPROFILE%\bin`)
-2. Remove the directory from PATH if desired
-
 ## Usage
 
 Run Convinci in your Git repository:
 
 ```bash
-
 convinci
+```
+### Options
 
+- `-e, --emoji`: Enable emojis in the commit message
+
+- `-d, --demo`: Run in demo mode (does not commit, only prints the commit message)
+
+Examples:
+
+```bash
+# Run with emojis
+convinci --emoji
+
+# Run in demo mode (no commit)
+convinci --demo
+
+# Run with emojis and in demo mode
+convinci -e -d
 ```
 
 Follow the interactive prompts to create your commit. The interface is designed to be intuitive and fast.
+
+To see the full help message with usage instructions:
+
+```bash
+convinci --help
+```
 
 ### Keybindings
 
@@ -93,7 +105,18 @@ Follow the interactive prompts to create your commit. The interface is designed 
 
 - **Arrow keys / HJKL**: Navigate lists
 
-- **1-9**: Quick selection from lists
+- **0-9**: Quick selection from lists
+
+## Uninstallation
+### Linux/macOS
+```bash
+sudo rm /usr/local/bin/convinci
+```
+
+### Windows
+1. Delete the file `convinci.exe` from the installation directory (usually `%USERPROFILE%\bin`)
+2. Remove the directory from PATH if desired
+
 
 ## Contributing
 

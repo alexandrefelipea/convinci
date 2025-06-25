@@ -151,12 +151,19 @@ impl App {
             // Selection by number (1-9)
             KeyCode::Char(c) if c.is_digit(10) => {
                 if let Some(num) = c.to_digit(10) {
-                    let idx = (num as usize) - 1;
-                    if idx < len {
-                        self.list_state_type.select(Some(idx));
-                        self.commit.commit_type = COMMIT_TYPES[idx].to_string();
-                        self.next_field();
-                    }
+                    let idx = if num == 0 {
+                        len - 1
+                    } else {
+                        let idx = (num - 1) as usize;
+                        if idx >= len {
+                            len - 1
+                        } else {
+                            idx
+                        }
+                    };
+                    self.list_state_type.select(Some(idx));
+                    self.commit.commit_type = COMMIT_TYPES[idx].to_string();
+                    self.next_field();
                 }
             }
             _ => {}
@@ -404,7 +411,14 @@ impl App {
                 } else {
                     "  "
                 };
-                ListItem::new(format!("{}{}. {}", prefix, i + 1, t))
+
+                let number = if i == COMMIT_TYPES.len() - 1 {
+                    0
+                } else {
+                    i + 1
+                };
+
+                ListItem::new(format!("{}{}. {}", prefix, number, t))
             })
             .collect();
 
@@ -609,11 +623,11 @@ impl App {
         };
 
         // Add mode indicator
-        let mode_indicator = if self.config.dev_mode {
-            " [DEV MODE] "
-        } else {
-            " [GIT MODE] "
-        };
+        let mode_indicator = format!(
+            "[{}] [{}] ",
+            if self.config.use_emoji { "EMOJI" } else { "NO-EMOJI" },
+            if self.config.dev_mode { "DEMO" } else { "GIT" }
+        );
 
         let footer_text = format!("{}{}", mode_indicator, keys_hint);
 

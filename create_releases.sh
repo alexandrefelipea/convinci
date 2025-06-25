@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -e  # Parar no primeiro erro
+# Stop on the first error
+set -e
 
 VERSION=$(grep 'version' Cargo.toml | head -1 | awk -F '"' '{print $2}')
 TARGETS=("x86_64-unknown-linux-musl" "x86_64-pc-windows-gnu")
@@ -9,11 +10,11 @@ mkdir -p releases
 
 for target in "${TARGETS[@]}"; do
     echo "Building for $target..."
-    cargo build --release --target $target
+    cargo build --release --target "$target"
 
     BIN_PATH="target/$target/release/"
 
-    if [[ $target == *"windows"* ]]; then
+    if [[ "$target" == *"windows"* ]]; then
         BIN_NAME="convinci.exe"
         ARCHIVE="convinci-v${VERSION}-${target}.zip"
     else
@@ -21,15 +22,15 @@ for target in "${TARGETS[@]}"; do
         ARCHIVE="convinci-v${VERSION}-${target}.tar.gz"
     fi
 
-    # Verificar se o binário existe
+    # Check if the binary exists
     if [ ! -f "${BIN_PATH}${BIN_NAME}" ]; then
-        echo "Erro: Binário não encontrado em ${BIN_PATH}${BIN_NAME}"
+        echo "Error: Binary not found at ${BIN_PATH}${BIN_NAME}"
         exit 1
     fi
 
     cp "${BIN_PATH}${BIN_NAME}" .
 
-    if [[ $target == *"windows"* ]]; then
+    if [[ "$target" == *"windows"* ]]; then
         zip -9 "$ARCHIVE" "$BIN_NAME"
     else
         tar czvf "$ARCHIVE" "$BIN_NAME"
@@ -39,4 +40,4 @@ for target in "${TARGETS[@]}"; do
     mv "$ARCHIVE" releases/
 done
 
-echo "Releases criadas na pasta releases/"
+echo "Releases created in the releases/ folder"

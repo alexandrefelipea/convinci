@@ -18,5 +18,6 @@ codegen-units = 1
 
 [dependencies]
 crossterm = "0.29.0"
-ratatui = "0.29.0"  # TUI moderna com suporte a widgets
-anyhow = "1.0"      # Tratamento de erros   # Para futuras configurações
+ratatui = "0.29.0"
+anyhow = "1.0"
+clap = { version = "4.5.40", features = ["derive"] }
