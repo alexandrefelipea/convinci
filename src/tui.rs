@@ -2,7 +2,7 @@ use crate::{
     commit::ConventionalCommit,
     config::{COMMIT_SCOPES, COMMIT_TYPES},
 };
-use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
+use ratatui::crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use ratatui::{prelude::*, widgets::*};
 
 #[derive(Debug, PartialEq, Clone, Copy)]

@@ -1,6 +1,6 @@
 [package]
 name = "convinci"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 description = "A fast terminal helper for creating conventional commits"
 license = "MIT"
@@ -17,7 +17,6 @@ lto = true
 codegen-units = 1
 
 [dependencies]
-crossterm = "0.29.0"
-ratatui = "0.29.0"
+ratatui = { version = "0.29.0", features = ["crossterm"] }
 anyhow = "1.0"
 clap = { version = "4.5.40", features = ["derive"] }
