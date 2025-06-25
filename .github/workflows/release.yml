@@ -32,10 +32,12 @@ jobs:
             target: x86_64-pc-windows-gnu
             bin_name: convinci.exe
             archive_ext: zip
-
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code for the specified tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Install musl (Linux)
         if: matrix.os == 'ubuntu-latest'
@@ -85,5 +87,6 @@ jobs:
         with:
           files: |
             artifacts/*
-          tag_name: ${{ github.ref }}
-          body: "Release ${{ github.ref_name }}"
+          tag_name: ${{ github.event.inputs.tag || github.ref }}
+          body: "Release for tag ${{ github.event.inputs.tag || github.ref_name }}"
+          draft: false
