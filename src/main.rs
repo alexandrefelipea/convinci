@@ -2,7 +2,9 @@ mod commit;
 mod config;
 mod tui;
 
+use crate::config::AppConfig;
 use anyhow::{Context, Result};
+use clap::Parser;
 use ratatui::crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
@@ -11,8 +13,6 @@ use ratatui::crossterm::{
 use ratatui::prelude::*;
 use std::{io, panic, process::Command};
 use tui::App;
-use clap::Parser;
-use crate::config::AppConfig;
 
 #[derive(Parser, Debug)]
 #[command(
@@ -103,11 +103,12 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<()> 
         terminal.draw(|f| app.render(f))?;
 
         if let Event::Key(key) = event::read()? {
-            app.handle_key(key);
+            if key.kind == event::KeyEventKind::Press {
+                app.handle_key(key);
 
-            // Global shortcut to exit
-            if key.code == KeyCode::Char('q') && key.modifiers.contains(event::KeyModifiers::CONTROL) {
-                app.should_quit = true;
+                if key.code == KeyCode::Char('q') && key.modifiers.contains(event::KeyModifiers::CONTROL) {
+                    app.should_quit = true;
+                }
             }
         }
     }
