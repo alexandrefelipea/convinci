@@ -1,8 +1,6 @@
 # Convinci - Conventional Commits Helper
 
-[![GitHub release](https://img.shields.io/github/release/alexandrefelipea/convinci.svg)](https://github.com/alexandrefelipea/convinci/releases)
-
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![GitHub release](https://img.shields.io/github/release/alexandrefelipea/convinci.svg)](https://github.com/alexandrefelipea/convinci/releases) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 Convinci is a fast and simple terminal application that helps you create conventional commits with an interactive TUI (Text-based User Interface). It guides you step-by-step to create commits that follow the [Conventional Commits](https://www.conventionalcommits.org) specification, making your commit history more readable and standardized.
 
