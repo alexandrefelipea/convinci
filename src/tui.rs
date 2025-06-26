@@ -487,10 +487,9 @@ impl App {
         f.render_widget(input, area);
 
         if self.current_field == InputField::Description {
-            f.set_cursor(
-                area.x + self.commit.description.len() as u16 + 1,
-                area.y + 1,
-            );
+            let cursor_x = area.x + self.commit.description.len() as u16 + 1;
+            let cursor_y = area.y + 1;
+            f.set_cursor_position(Position {x: cursor_x, y: cursor_y});
         }
     }
 
@@ -527,7 +526,7 @@ impl App {
         let text = format!("{} Breaking Change (API incompatible)", checkbox);
 
         let block = Block::default()
-            .title(" Significant Change ")
+            .title(" Breaking Change? (SPACE to enable)")
             .borders(Borders::ALL)
             .border_style(if self.current_field == InputField::BreakingToggle {
                 Style::default().fg(Color::Red)
@@ -563,10 +562,10 @@ impl App {
         f.render_widget(input, area);
 
         if self.current_field == InputField::BreakingDescription {
-            f.set_cursor(
-                area.x + self.commit.breaking_change_description.len() as u16 + 1,
-                area.y + 1,
-            );
+            let cursor_x = area.x + self.commit.breaking_change_description.len() as u16 + 1;
+            let cursor_y = area.y + 1;
+
+            f.set_cursor_position(Position { x: cursor_x, y: cursor_y });
         }
     }
 
@@ -606,7 +605,7 @@ impl App {
                     "x: Settings  Tab: Focus field  Esc: Exit  Ctrl+C: Exit  Ctrl+Enter: Confirm"
                 }
                 InputField::Type | InputField::Scope => {
-                    "↑/↓/hjkl: Navigate  1-9: Direct selection  Tab: Next  Shift+Tab: Previous  Enter: Confirm"
+                    "↑/↓/jk: Navigate  1-9: Direct selection  Tab: Next  Shift+Tab: Previous  Enter: Confirm"
                 }
                 InputField::Description | InputField::Body => {
                     "←→/hl: Fields  Tab: Navigate  Enter: Confirm  Esc: Defocus"
@@ -624,8 +623,7 @@ impl App {
 
         // Add mode indicator
         let mode_indicator = format!(
-            "[{}] [{}] ",
-            if self.config.use_emoji { "EMOJI" } else { "NO-EMOJI" },
+            "[{}]  ",
             if self.config.dev_mode { "DEMO" } else { "GIT" }
         );
 

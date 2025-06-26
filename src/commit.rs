@@ -1,4 +1,4 @@
-use crate::config::AppConfig;
+use regex::Regex;
 
 #[derive(Debug)]
 pub struct ConventionalCommit {
@@ -24,25 +24,7 @@ impl Default for ConventionalCommit {
 }
 
 impl ConventionalCommit {
-    pub fn generate(&self, config: &AppConfig) -> String {
-        let emoji = if config.use_emoji {
-            match self.commit_type.as_str() {
-                "feat" => "✨ ",
-                "fix" => "🐛 ",
-                "docs" => "📚 ",
-                "style" => "🎨 ",
-                "refactor" => "♻️ ",
-                "perf" => "⚡ ",
-                "test" => "✅ ",
-                "build" => "📦 ",
-                "ci" => "👷 ",
-                "chore" => "🔧 ",
-                _ => "",
-            }
-        } else {
-            ""
-        };
-
+    pub fn generate(&self) -> String {
         let scope = self.scope
             .as_ref()
             .map(|s| format!("({})", s))
@@ -51,8 +33,8 @@ impl ConventionalCommit {
         let breaking = if self.breaking_change { "!" } else { "" };
 
         let header = format!(
-            "{}{}{}{}: {}",
-            emoji, self.commit_type, scope, breaking, self.description
+            "{}{}{}: {}",
+            self.commit_type, scope, breaking, self.description
         );
 
         let body = self.body
@@ -72,5 +54,22 @@ impl ConventionalCommit {
         };
 
         format!("{}{}{}", header, body, footer)
+    }
+
+    pub fn validate(message: &str) -> Result<(), String> {
+        let re = Regex::new(r"^(?P<type>[a-z]+)(\((?P<scope>[^()\r\n]*)\))?(?P<breaking>!)?: (?P<description>[^\r\n]+)").unwrap();
+
+        if let Some(first_line) = message.lines().next() {
+            if re.is_match(first_line) {
+                Ok(())
+            } else {
+                Err(format!(
+                    "Invalid commit message format. Must follow:\n<type>[optional scope]: <description>\n\nExample: feat(parser): add new parsing algorithm\n\nYour message: {}",
+                    first_line
+                ))
+            }
+        } else {
+            Err("Commit message is empty".to_string())
+        }
     }
 }

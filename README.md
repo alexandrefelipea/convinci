@@ -14,30 +14,31 @@
 - 📝 **Step-by-step guidance** for perfect commits
 - 🔄 Support for all standard commit types (`feat`, `fix`, `chore`, `docs`, etc.)
 - ⚠️ Breaking change indicator and description
-- 🌈 Optional emoji support for visual commit messages
 - 📦 Pre-built binaries for all major platforms
-- ⌨️ Vim-style navigation (`hjkl`) and keyboard shortcuts
+- ⌨️ Vim-style navigation (`jk`) and keyboard shortcuts
 
 ## 📦 Installation
 ### Linux/macOS
 
 Install with curl:
 ```bash
-curl -sSL https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/alexandrefelipea/convinci/master/scripts/install.sh | bash
 ```
 Or with wget:
 ```bash
-wget -qO- https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/alexandrefelipea/convinci/master/scripts/install.sh | bash
 ```
 ### Windows (PowerShell)
 
 Run as Administrator:
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/alexandrefelipea/convinci/master/install.ps1')"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/alexandrefelipea/convinci/master/scripts/install.ps1')"
 ```
 ### Via Cargo (Rust developers)
 ```bash
 cargo install convinci
+git config --global alias.convinci '!convinci'
+git config --global alias.cv '!convinci'
 ```
 ## 🔄 Updating
 Update to the latest version using the same installation methods for Linux/macOS and Windows.
@@ -47,34 +48,30 @@ Updating Via Cargo:
 cargo install convinci --force
 ```
 ## 💻 Usage
-Navigate to your Git repository and run:
+
+After installation, you can use Convinci directly or via Git aliases:
 ```bash
+# Direct usage
 convinci
+
+# Via Git aliases (recommended)
+git convinci
+git cv
 ```
 ### Command Options
-| Option          | Description                          | Example                     |
-|-----------------|--------------------------------------|-----------------------------|
-| `-e`, `--emoji` | Enable emojis in commit messages     | `convinci --emoji`          |
-| `-d`, `--demo`  | Demo mode (no actual commit)         | `convinci --demo`           |
-| `-v`, `--version` | Show version information            | `convinci --version`        |
-| `-h`, `--help`   | Show help message              | `convinci --help`           |
-### Advanced Usage
-```bash
-# Create commit with emojis
-convinci --emoji
-# Preview commit without executing
-convinci --demo
-# Combine options
-convinci -e -d  # Demo mode with emojis
-```
+| Option            | Description                  | Example                  |
+|-------------------|------------------------------|--------------------------|
+| `-d`, `--demo`    | Demo mode (no actual commit) | `convinci --demo`        |
+| `-v`, `--version` | Show version information     | `git convinci --version` |
+| `-h`, `--help`    | Show help message            | `git cv --help`          |
 ### Keybindings
-| Keys               | Action                          |
-|--------------------|---------------------------------|
+| Keys              | Action                          |
+|-------------------|---------------------------------|
 | `Tab`/`Shift+Tab` | Navigate between fields         |
-| `Ctrl+Enter`       | Confirm and generate commit     |
-| `Ctrl+C`           | Exit without committing         |
-| `↑↓`/`jk`        | Navigate lists and options      |
-| `0-9`              | Quick select from numbered list |
+| `Ctrl+Enter`      | Confirm and generate commit     |
+| `Ctrl+C`          | Exit without committing         |
+| `↑↓`/`jk`         | Navigate lists and options      |
+| `0-9`             | Quick select from numbered list |
 ## ❌ Uninstallation
 ### Linux/macOS
 ```bash

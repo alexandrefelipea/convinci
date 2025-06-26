@@ -8,14 +8,12 @@ pub const COMMIT_SCOPES: [&str; 9] = [
 
 #[derive(Debug, Clone, Copy)]
 pub struct AppConfig {
-    pub use_emoji: bool,
     pub dev_mode: bool,
 }
 
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
-            use_emoji: false,
             dev_mode: false,
         }
     }

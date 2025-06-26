@@ -112,6 +112,22 @@ cleanup() {
     rm -rf "$TMP_DIR"
 }
 
+# Add git aliases
+add_git_aliases() {
+    echo "➕ Adding git aliases..."
+
+    git config alias.convinci "!$INSTALL_DIR/$BINARY_NAME"
+    git config alias.cv "!$INSTALL_DIR/$BINARY_NAME"
+
+    if [ -f "$HOME/.gitconfig" ]; then
+        git config --global alias.convinci "!$INSTALL_DIR/$BINARY_NAME"
+        git config --global alias.cv "!$INSTALL_DIR/$BINARY_NAME"
+        echo "✅ Added global git aliases: 'git convinci' and 'git cv'"
+    else
+        echo "✅ Added local git aliases: 'git convinci' and 'git cv'"
+    fi
+}
+
 # Main flow
 main() {
     echo -e "\n\033[1;34mconvinci Installer\033[0m"
@@ -122,6 +138,7 @@ main() {
     version=$(get_latest_version)
 
     install_convinci "$version"
+    add_git_aliases
     verify_installation
 
     echo -e "\n💡 Tip: Run 'convinci --help' to see options"

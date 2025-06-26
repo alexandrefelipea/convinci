@@ -74,6 +74,23 @@ function Download-File {
     Exit-WithError "Failed to download after $Retries attempts. Last error: $lastError"
 }
 
+# Add git aliases
+function Add-GitAliases {
+    Write-Host "➕ Adding git aliases..." -ForegroundColor Cyan
+
+    try {
+        git config --global alias.convinci "!$INSTALL_PATH"
+        git config --global alias.cv "!$INSTALL_PATH"
+        Write-Host "✅ Added global git aliases: 'git convinci' and 'git cv'" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "⚠️ Could not add global git aliases. Adding local instead." -ForegroundColor Yellow
+        git config alias.convinci "!$INSTALL_PATH"
+        git config alias.cv "!$INSTALL_PATH"
+        Write-Host "✅ Added local git aliases: 'git convinci' and 'git cv'" -ForegroundColor Green
+    }
+}
+
 
 # Extract ZIP file using .NET libraries
 function Extract-Zip {
@@ -131,6 +148,8 @@ try {
     Copy-Item -Path $BINARY_PATH -Destination $INSTALL_PATH -Force
     Write-Host "✅ Installed to: $INSTALL_PATH" -ForegroundColor Green
 
+    Add-GitAliases
+
     $CurrentPath = [Environment]::GetEnvironmentVariable("Path", "User")
     if ($CurrentPath -notlike "*$INSTALL_DIR*") {
         $newPath = ($CurrentPath.Split(';') | Where-Object { $_ -ne $INSTALL_DIR }) + $INSTALL_DIR
@@ -144,7 +163,7 @@ try {
     Write-Host "`n🎉 Installation completed successfully!" -ForegroundColor Green
     Write-Host "Run Convinci with: convinci" -ForegroundColor Cyan
     Write-Host "Documentation: https://github.com/$REPO_OWNER/$REPO_NAME" -ForegroundColor Cyan
-    Write-Host "`nNote: If you just added Convinci to PATH, please restart your terminal.`n" -ForegroundColor Yellow
+    Write-Host "`nNote: Just added Convinci to PATH, please restart your terminal.`n" -ForegroundColor Yellow
 }
 catch {
     Exit-WithError "Installation failed: $_"

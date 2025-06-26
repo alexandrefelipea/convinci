@@ -1,6 +1,6 @@
 [package]
 name = "convinci"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2024"
 description = "A fast terminal helper for creating conventional commits"
 license = "MIT"
@@ -20,3 +20,4 @@ codegen-units = 1
 ratatui = { version = "0.29.0", features = ["crossterm"] }
 anyhow = "1.0"
 clap = { version = "4.5.40", features = ["derive"] }
+regex = "1.11.1"

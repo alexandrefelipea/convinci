@@ -1,18 +1,19 @@
 mod commit;
 mod config;
+mod hooks;
 mod tui;
 
 use crate::config::AppConfig;
 use anyhow::{Context, Result};
-use clap::Parser;
+use clap::{Parser, Subcommand};
 use ratatui::crossterm::{
-    event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
+    event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEventKind},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use ratatui::prelude::*;
 use std::{io, panic, process::Command};
-use tui::App;
+use std::io::Read;
 
 #[derive(Parser, Debug)]
 #[command(
@@ -28,39 +29,81 @@ Key features:
 - Step-by-step commit creation
 - Support for all conventional commit types
 - Breaking change indicator and description
-- Emoji support (optional)
 - Demo mode to preview commits without committing
+- Git hooks integration for commit validation
 
 Usage:
-  convinci [OPTIONS]
+  convinci [OPTIONS] [COMMAND]
 
 Options:
-  -e, --emoji    Enable emojis in commit message
-  -d, --demo     Run in demo mode (no actual commit)
-  -h, --help     Print help information
-  -V, --version  Print version information
+  -d, --demo     Run in demo mode (no actual commit, interactive mode only)
+
+Commands:
+  hooks          Manage Git hooks for commit validation
+  validate       Validate a commit message
+  help           Print this message or the help of the given subcommand(s)
 
 Examples:
-  convinci              # Run in normal mode
-  convinci --emoji      # Enable emojis in commit message
+  convinci              # Run interactive mode (default)
   convinci --demo       # Run in demo mode (only prints the commit)
-  convinci -e -d        # Enable emojis and run in demo mode
-
-For more information, visit:
-https://github.com/alexandrefelipea/convinci
+  convinci hooks install # Install commit-msg hook
+  convinci validate "feat: add new feature" # Validate a commit message
+  convinci hooks uninstall # Uninstall commit-msg hook
 "#
 )]
-struct Args {
-    #[arg(short, long)]
-    emoji: bool,
-
+struct Cli {
     #[arg(short, long)]
     demo: bool,
+
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
+
+#[derive(Subcommand, Debug)]
+enum Commands {
+    Hooks {
+        #[command(subcommand)]
+        command: HooksCommand,
+    },
+
+    Validate {
+        message: String,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+enum HooksCommand {
+    Install,
+    Uninstall,
 }
 
 fn main() -> Result<()> {
-    let args = Args::parse();
+    let cli = Cli::parse();
 
+    match cli.command {
+        Some(Commands::Hooks { command }) => match command {
+            HooksCommand::Install => hooks::install_hook(),
+            HooksCommand::Uninstall => hooks::uninstall_hook(),
+        },
+        Some(Commands::Validate { message }) => {
+            let message = if message == "-" {
+                // Read from stdin
+                let mut buffer = String::new();
+                io::stdin().read_to_string(&mut buffer)?;
+                buffer
+            } else {
+                message
+            };
+
+            validate_commit_message(&message)?;
+            println!("✅ Commit message is valid!");
+            Ok(())
+        },
+        None => run_interactive(cli.demo),
+    }
+}
+
+fn run_interactive(dev_mode: bool) -> Result<()> {
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
@@ -76,10 +119,9 @@ fn main() -> Result<()> {
     }));
 
     // Create app with config from arguments
-    let mut app = App::new();
+    let mut app = tui::App::new();
     app.config = AppConfig {
-        use_emoji: args.emoji,
-        dev_mode: args.demo,
+        dev_mode,
     };
 
     run_app(&mut terminal, &mut app)?;
@@ -87,9 +129,9 @@ fn main() -> Result<()> {
     // Final cleanup
     reset_terminal()?;
     if app.should_confirm {
-        let commit_message = app.commit.generate(&app.config);
+        let commit_message = app.commit.generate();
 
-        if app.config.dev_mode {
+        if dev_mode {
             println!("Generated commit message:\n\n{}", commit_message);
         } else {
             perform_git_commit(&commit_message)?;
@@ -98,12 +140,12 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<()> {
+fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut tui::App) -> Result<()> {
     while !app.should_quit {
         terminal.draw(|f| app.render(f))?;
 
         if let Event::Key(key) = event::read()? {
-            if key.kind == event::KeyEventKind::Press {
+            if key.kind == KeyEventKind::Press {
                 app.handle_key(key);
 
                 if key.code == KeyCode::Char('q') && key.modifiers.contains(event::KeyModifiers::CONTROL) {
@@ -115,7 +157,11 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<()> 
     Ok(())
 }
 
-// Function to perform the actual commit
+fn validate_commit_message(message: &str) -> Result<()> {
+    commit::ConventionalCommit::validate(message)
+        .map_err(|e| anyhow::anyhow!(e))
+}
+
 fn perform_git_commit(message: &str) -> Result<()> {
     // Check if we are in a Git repository
     let repo_check = Command::new("git")
