@@ -1,8 +1,10 @@
 use anyhow::{Context, Result};
 use std::fs;
 use std::io::Write;
-use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
+
+#[cfg(unix)]
+use std::os::unix::fs::PermissionsExt;
 
 const HOOK_SCRIPT: &str = r#"#!/bin/sh
 # Convinci commit-msg hook
@@ -44,10 +46,13 @@ pub fn install_hook() -> Result<()> {
     file.write_all(HOOK_SCRIPT.as_bytes())
         .context("Failed to write hook script")?;
 
-    // Set executable permissions
-    let mut perms = file.metadata()?.permissions();
-    perms.set_mode(0o755);
-    fs::set_permissions(&hook_path, perms).context("Failed to set hook permissions")?;
+    // Set executable permissions (Unix only)
+    #[cfg(unix)]
+    {
+        let mut perms = file.metadata()?.permissions();
+        perms.set_mode(0o755);
+        fs::set_permissions(&hook_path, perms).context("Failed to set hook permissions")?;
+    }
 
     println!("✅ Commit-msg hook installed at {}", hook_path.display());
     Ok(())
