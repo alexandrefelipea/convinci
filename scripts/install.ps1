@@ -56,7 +56,8 @@ function Download-File {
             if ((Get-Item $OutputPath).Length -gt 0) {
                 Write-Host "✅ Download completed successfully" -ForegroundColor Green
                 return
-            } else {
+            }
+            else {
                 throw "Downloaded file is empty."
             }
         }
@@ -74,24 +75,6 @@ function Download-File {
     Exit-WithError "Failed to download after $Retries attempts. Last error: $lastError"
 }
 
-# Add git aliases
-function Add-GitAliases {
-    Write-Host "➕ Adding git aliases..." -ForegroundColor Cyan
-
-    try {
-        git config --global alias.convinci "!$INSTALL_PATH"
-        git config --global alias.cv "!$INSTALL_PATH"
-        Write-Host "✅ Added global git aliases: 'git convinci' and 'git cv'" -ForegroundColor Green
-    }
-    catch {
-        Write-Host "⚠️ Could not add global git aliases. Adding local instead." -ForegroundColor Yellow
-        git config alias.convinci "!$INSTALL_PATH"
-        git config alias.cv "!$INSTALL_PATH"
-        Write-Host "✅ Added local git aliases: 'git convinci' and 'git cv'" -ForegroundColor Green
-    }
-}
-
-
 # Extract ZIP file using .NET libraries
 function Extract-Zip {
     param(
@@ -108,6 +91,33 @@ function Extract-Zip {
     }
     catch {
         Exit-WithError "Failed to extract ZIP: $_"
+    }
+}
+
+# Add git aliases
+function Add-GitAliases {
+    Write-Host "➕ Adding git aliases..." -ForegroundColor Cyan
+    
+    # Check if git is available
+    if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+        Write-Host "⚠️ Git not found. Skipping alias setup." -ForegroundColor Yellow
+        return
+    }
+
+    # Format the alias command with single quotes and forward slashes
+    $AliasCommand = "! '$INSTALL_PATH'"
+    # Convert backslashes to forward slashes
+    $AliasCommand = $AliasCommand.Replace('\', '/')
+    
+    try {
+        git config --global alias.convinci $AliasCommand
+        git config --global alias.cv $AliasCommand
+        Write-Host "✅ Added global git aliases: 'git convinci' and 'git cv'" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "⚠️ Could not add global git aliases. You may need to set them manually:" -ForegroundColor Yellow
+        Write-Host "   git config --global alias.convinci '! `"$INSTALL_PATH`"'"
+        Write-Host "   git config --global alias.cv '! `"$INSTALL_PATH`"'"
     }
 }
 
@@ -161,9 +171,9 @@ try {
     Remove-Item -Path $TEMP_DIR -Recurse -Force -ErrorAction SilentlyContinue
 
     Write-Host "`n🎉 Installation completed successfully!" -ForegroundColor Green
-    Write-Host "Run Convinci with: convinci, git convinci, git cv" -ForegroundColor Cyan
+    Write-Host "Run Convinci with: convinci or git convinci or git cv" -ForegroundColor Cyan
     Write-Host "Documentation: https://github.com/$REPO_OWNER/$REPO_NAME" -ForegroundColor Cyan
-    Write-Host "`nNote: Just added Convinci to PATH, please restart your terminal.`n" -ForegroundColor Yellow
+    Write-Host "`nNote: If you just added Convinci to PATH, please restart your terminal.`n" -ForegroundColor Yellow
 }
 catch {
     Exit-WithError "Installation failed: $_"
