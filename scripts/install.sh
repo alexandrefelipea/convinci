@@ -99,7 +99,7 @@ install_convinci() {
 verify_installation() {
     if command -v "$BINARY_NAME" &> /dev/null; then
         echo -e "\n✅ \033[1;32mInstallation completed successfully!\033[0m"
-        echo "Run convinci with: $BINARY_NAME"
+        echo "Run convinci with: $BINARY_NAME, git convinci, git cv"
     else
         warn "Installation seems to have completed, but the binary is not in your PATH"
         echo "Please add $INSTALL_DIR to your PATH:"

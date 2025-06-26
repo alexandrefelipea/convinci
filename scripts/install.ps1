@@ -161,7 +161,7 @@ try {
     Remove-Item -Path $TEMP_DIR -Recurse -Force -ErrorAction SilentlyContinue
 
     Write-Host "`n🎉 Installation completed successfully!" -ForegroundColor Green
-    Write-Host "Run Convinci with: convinci" -ForegroundColor Cyan
+    Write-Host "Run Convinci with: convinci, git convinci, git cv" -ForegroundColor Cyan
     Write-Host "Documentation: https://github.com/$REPO_OWNER/$REPO_NAME" -ForegroundColor Cyan
     Write-Host "`nNote: Just added Convinci to PATH, please restart your terminal.`n" -ForegroundColor Yellow
 }
