@@ -114,10 +114,17 @@ cleanup() {
 
 # Add git aliases
 add_git_aliases() {
-    echo "➕ Adding git aliases..."
-    git config --global alias.convinci "!$INSTALL_DIR/$BINARY_NAME"
-    git config --global alias.cv "!$INSTALL_DIR/$BINARY_NAME"
-    echo "✅ Added global git aliases: 'git convinci' and 'git cv'"
+     echo "➕ Adding git aliases..."
+
+        if git config --global alias.convinci "!$INSTALL_DIR/$BINARY_NAME" && \
+           git config --global alias.cv "!$INSTALL_DIR/$BINARY_NAME"; then
+            echo "✅ Added global git aliases: 'git convinci' and 'git cv'"
+        else
+            echo "⚠️ Failed to add global git aliases. You may need to set them manually." >&2
+            echo "   Run these commands to set them manually:"
+            echo "   git config --global alias.convinci \"!$INSTALL_DIR/$BINARY_NAME\""
+            echo "   git config --global alias.cv \"!$INSTALL_DIR/$BINARY_NAME\""
+        fi
 }
 
 # Main flow
